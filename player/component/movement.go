@@ -113,6 +113,8 @@ type AuthoritativeMovementComponent struct {
 	jumping, pressingJump bool
 	jumpDelay             uint64
 
+	prevSprinting, prevJumping bool
+
 	collideX, collideY, collideZ bool
 	onGround                     bool
 
@@ -727,6 +729,12 @@ func (mc *AuthoritativeMovementComponent) Update(pk *packet.PlayerAuthInput) {
 	mc.pressingSprint = pk.InputData.Load(packet.InputFlagSprintDown)
 
 	startFlag, stopFlag := pk.InputData.Load(packet.InputFlagStartSprinting), pk.InputData.Load(packet.InputFlagStopSprinting)
+	if mc.mPlayer.Version < player.GameVersion1_17_0 {
+		sprinting := pk.InputData.Load(packet.InputFlagSprinting)
+		startFlag = sprinting && !mc.prevSprinting
+		stopFlag = !sprinting && mc.prevSprinting
+		mc.prevSprinting = sprinting
+	}
 	isNewVersionPlayer := mc.mPlayer.VersionInRange(player.GameVersion1_21_0, 65536)
 	var needsSpeedAdjusted bool
 	if startFlag && stopFlag /*&& hasForwardKeyPressed*/ {
@@ -813,6 +821,10 @@ func (mc *AuthoritativeMovementComponent) Update(pk *packet.PlayerAuthInput) {
 
 	mc.jumping = pk.InputData.Load(packet.InputFlagStartJumping)
 	mc.pressingJump = pk.InputData.Load(packet.InputFlagJumping)
+	if mc.mPlayer.Version < player.GameVersion1_17_0 {
+		mc.jumping = mc.pressingJump && !mc.prevJumping
+		mc.prevJumping = mc.pressingJump
+	}
 	mc.jumpHeight = game.DefaultJumpHeight
 	if jumpBoost, ok := mc.mPlayer.Effects().Get(packet.EffectJumpBoost); ok {
 		mc.jumpHeight += float32(jumpBoost.Amplifier) * 0.1
@@ -1032,12 +1044,16 @@ func (mc *AuthoritativeMovementComponent) Sync() {
 		mc.mPlayer.SendPacketToClient(actorData)
 
 		// Send the actual movement correction to the client.
+		correctionTick := mc.mPlayer.SimulationFrame
+		if mc.mPlayer.Version < player.GameVersion1_20_10 && correctionTick > 0 {
+			correctionTick--
+		}
 		mc.mPlayer.SendPacketToClient(&packet.CorrectPlayerMovePrediction{
 			PredictionType: packet.PredictionTypePlayer,
 			Position:       mc.Pos().Add(mgl32.Vec3{0, 1.621}),
 			Delta:          mc.Vel(),
 			OnGround:       mc.OnGround(),
-			Tick:           mc.mPlayer.SimulationFrame,
+			Tick:           correctionTick,
 		})
 		mc.mPlayer.PendingCorrectionACK = true
 	}

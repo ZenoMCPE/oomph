@@ -28,7 +28,7 @@ type ACKComponent struct {
 
 func NewACKComponent(p *player.Player) *ACKComponent {
 	c := &ACKComponent{
-		legacyMode: false, // <= 1.18 is legacy mode enabled
+		legacyMode: p.Version < player.GameVersion1_20_10,
 		mPlayer:    p,
 
 		ticksSinceLastResponse: 0,

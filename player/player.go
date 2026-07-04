@@ -25,6 +25,27 @@ import (
 )
 
 const (
+	GameVersion1_16_100 = 419
+	GameVersion1_16_200 = 422
+	GameVersion1_16_210 = 428
+	GameVersion1_16_220 = 431
+	GameVersion1_17_0   = 440
+	GameVersion1_17_10  = 448
+	GameVersion1_17_30  = 465
+	GameVersion1_17_40  = 471
+	GameVersion1_18_0   = 475
+	GameVersion1_18_10  = 486
+	GameVersion1_18_30  = 503
+	GameVersion1_19_0   = 527
+	GameVersion1_19_10  = 534
+	GameVersion1_19_20  = 544
+	GameVersion1_19_30  = 554
+	GameVersion1_19_40  = 557
+	GameVersion1_19_50  = 560
+	GameVersion1_19_60  = 567
+	GameVersion1_19_70  = 575
+	GameVersion1_19_80  = 582
+
 	GameVersion1_20_0  = 589
 	GameVersion1_20_10 = 594
 	GameVersion1_20_30 = 618

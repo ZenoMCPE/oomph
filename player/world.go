@@ -6,6 +6,7 @@ import (
 	"github.com/chewxy/math32"
 	"github.com/df-mc/dragonfly/server/block"
 	df_cube "github.com/df-mc/dragonfly/server/block/cube"
+	"github.com/df-mc/dragonfly/server/item"
 	"github.com/df-mc/dragonfly/server/world"
 	"github.com/ethaniccc/float32-cube/cube"
 	"github.com/go-gl/mathgl/mgl32"
@@ -434,6 +435,9 @@ func (p *Player) expectedBlockBreakTime(pos protocol.BlockPos) float32 {
 	}
 
 	breakTime := float32(block.BreakDuration(b, held).Milliseconds())
+	if sword, ok := held.Item().(item.Sword); ok {
+		breakTime /= float32(sword.BaseMiningEfficiency(b))
+	}
 	// On versions below 1.21.50, the block break time for wool is shorter by ~25% See https://github.com/oomph-ac/oomph/issues/107
 	if _, isWool := b.(block.Wool); isWool && p.Version < GameVersion1_21_50 {
 		breakTime *= 0.75

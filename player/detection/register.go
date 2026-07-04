@@ -12,16 +12,16 @@ func Register(p *player.Player) {
 	// bad packet detections
 	p.RegisterDetection(New_BadPacketA(p))
 	p.RegisterDetection(New_BadPacketB(p))
-	p.RegisterDetection(New_BadPacketC(p))
+	// p.RegisterDetection(New_BadPacketC(p))
 	p.RegisterDetection(New_BadPacketD(p))
 	p.RegisterDetection(New_BadPacketE(p))
 	p.RegisterDetection(New_BadPacketF(p))
 	p.RegisterDetection(New_BadPacketG(p))
 
 	// edition faker detections
-	p.RegisterDetection(New_EditionFakerA(p))
-	p.RegisterDetection(New_EditionFakerB(p))
-	p.RegisterDetection(New_EditionFakerC(p))
+	// p.RegisterDetection(New_EditionFakerA(p))
+	// p.RegisterDetection(New_EditionFakerB(p))
+	// p.RegisterDetection(New_EditionFakerC(p))
 
 	p.RegisterDetection(New_InvMoveA(p))
 
